@@ -5,12 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🔒 СЕЙФ 250</title>
   <style>
-    body { font-family: 'Segoe UI', Arial; background: linear-gradient(135deg, #0a0a1f, #1a0033); color: #fff; margin: 0; padding: 20px; text-align: center; }
+    body { 
+      font-family: 'Segoe UI', Arial; 
+      background: linear-gradient(135deg, #0a0a1f, #1a0033); 
+      color: #fff; 
+      margin: 0; 
+      padding: 20px; 
+      text-align: center; 
+    }
     h1 { font-size: 3rem; color: #ff3366; text-shadow: 0 0 20px #ff00aa; }
-    .grid { display: grid; grid-template-columns: repeat(25, 1fr); gap: 6px; max-width: 1150px; margin: 30px auto; padding: 25px; background: rgba(0,0,0,0.5); border-radius: 20px; }
-    .cell { width: 40px; height: 40px; background: #1e1e2e; border: 3px solid #555; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; transition: 0.3s; }
-    .opened { background: #440000 !important; color: #ff6666 !important; text-decoration: line-through; border-color: #ff3366; }
-    .win { background: #004400 !important; color: #00ff88 !important; border-color: #00ff88; animation: winpulse 1.5s infinite; }
+    .grid { 
+      display: grid; 
+      grid-template-columns: repeat(25, 1fr); 
+      gap: 6px; 
+      max-width: 1150px; 
+      margin: 30px auto; 
+      padding: 25px; 
+      background: rgba(0,0,0,0.5); 
+      border-radius: 20px; 
+    }
+    .cell { 
+      width: 40px; height: 40px; 
+      background: #1e1e2e; 
+      border: 3px solid #555; 
+      border-radius: 10px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      font-weight: bold; 
+      transition: 0.3s; 
+      font-size: 15px;
+    }
+    .opened { 
+      background: #440000 !important; 
+      color: #ff6666 !important; 
+      text-decoration: line-through; 
+      border-color: #ff3366; 
+    }
+    .win { 
+      background: #004400 !important; 
+      color: #00ff88 !important; 
+      border-color: #00ff88; 
+      animation: winpulse 1.5s infinite; 
+    }
     @keyframes winpulse { 0%,100% {transform:scale(1);} 50% {transform:scale(1.15);} }
     .info { font-size: 1.5rem; margin: 15px 0; color: #ffcc66; }
   </style>
@@ -20,10 +57,10 @@
   <p class="info">Відкрито: <span id="count">0</span> / 250</p>
   <div class="grid" id="grid"></div>
 
-<script>
-    // ==================== НАЛАШТУВАННЯ ====================
-    const API_URL = "https://safe-250-web-production.up.railway.app";   // ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
-    // Приклад: "https://safe-bot-production.up.railway.app/api/safe"
+  <script>
+    // ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
+    const API_URL = "tgbot-production-97ae.up.railway.app";   // ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
+    // Приклад: "https://kassabot-4444-production.up.railway.app/api/safe"
 
     const grid = document.getElementById('grid');
 
@@ -45,12 +82,10 @@
 
         document.getElementById('count').textContent = data.opened.length;
 
-        // Скидаємо всі клітинки
+        // Скидаємо всі
         for (let i = 1; i <= 250; i++) {
           const el = document.getElementById(`c${i}`);
-          if (el) {
-            el.classList.remove('opened', 'win');
-          }
+          if (el) el.classList.remove('opened', 'win');
         }
 
         // Застосовуємо відкриті
@@ -58,9 +93,7 @@
           const el = document.getElementById(`c${n}`);
           if (el) {
             el.classList.add('opened');
-            if (n === data.win_cell) {
-              el.classList.add('win');
-            }
+            if (n === data.win_cell) el.classList.add('win');
           }
         });
       } catch(e) {
@@ -70,7 +103,7 @@
 
     createGrid();
     update();
-    setInterval(update, 1500);   // оновлення кожні 1.5 сек
-</script>
+    setInterval(update, 1500);
+  </script>
 </body>
 </html>
