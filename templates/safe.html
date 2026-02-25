@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔒 СЕЙФ 250</title>
+  <style>
+    body { font-family: 'Segoe UI', Arial; background: linear-gradient(135deg, #0a0a1f, #1a0033); color: #fff; margin: 0; padding: 20px; text-align: center; }
+    h1 { font-size: 3rem; color: #ff3366; text-shadow: 0 0 20px #ff00aa; }
+    .grid { display: grid; grid-template-columns: repeat(25, 1fr); gap: 6px; max-width: 1150px; margin: 30px auto; padding: 25px; background: rgba(0,0,0,0.5); border-radius: 20px; }
+    .cell { width: 40px; height: 40px; background: #1e1e2e; border: 3px solid #555; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; transition: 0.3s; }
+    .opened { background: #440000 !important; color: #ff6666 !important; text-decoration: line-through; border-color: #ff3366; }
+    .win { background: #004400 !important; color: #00ff88 !important; border-color: #00ff88; animation: winpulse 1.5s infinite; }
+    @keyframes winpulse { 0%,100% {transform:scale(1);} 50% {transform:scale(1.15);} }
+    .info { font-size: 1.5rem; margin: 15px 0; color: #ffcc66; }
+  </style>
+</head>
+<body>
+  <h1>🔒 СЕЙФ 250</h1>
+  <p class="info">Відкрито: <span id="count">0</span> / 250</p>
+  <div class="grid" id="grid"></div>
+
+  <script>
+    const grid = document.getElementById('grid');
+
+    function createGrid() {
+      grid.innerHTML = '';
+      for (let i = 1; i <= 250; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.textContent = i;
+        cell.id = `c${i}`;
+        grid.appendChild(cell);
+      }
+    }
+
+    async function update() {
+      try {
+        const res = await fetch('/state');
+        const data = await res.json();
+        document.getElementById('count').textContent = data.opened.length;
+
+        data.opened.forEach(n => {
+          const el = document.getElementById(`c${n}`);
+          if (el) {
+            el.classList.add('opened');
+            if (n === data.win_cell) el.classList.add('win');
+          }
+        });
+      } catch(e){}
+    }
+
+    createGrid();
+    update();
+    setInterval(update, 1500);
+  </script>
+</body>
+</html>
