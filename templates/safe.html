@@ -20,7 +20,11 @@
   <p class="info">Відкрито: <span id="count">0</span> / 250</p>
   <div class="grid" id="grid"></div>
 
-  <script>
+<script>
+    // ==================== НАЛАШТУВАННЯ ====================
+    const API_URL = "https://ТВІЙ_БОТ_URL/api/safe";   // ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
+    // Приклад: "https://safe-bot-production.up.railway.app/api/safe"
+
     const grid = document.getElementById('grid');
 
     function createGrid() {
@@ -36,23 +40,37 @@
 
     async function update() {
       try {
-        const res = await fetch('/state');
+        const res = await fetch(API_URL);
         const data = await res.json();
+
         document.getElementById('count').textContent = data.opened.length;
 
+        // Скидаємо всі клітинки
+        for (let i = 1; i <= 250; i++) {
+          const el = document.getElementById(`c${i}`);
+          if (el) {
+            el.classList.remove('opened', 'win');
+          }
+        }
+
+        // Застосовуємо відкриті
         data.opened.forEach(n => {
           const el = document.getElementById(`c${n}`);
           if (el) {
             el.classList.add('opened');
-            if (n === data.win_cell) el.classList.add('win');
+            if (n === data.win_cell) {
+              el.classList.add('win');
+            }
           }
         });
-      } catch(e){}
+      } catch(e) {
+        console.error("Не вдалося підключитися до бота", e);
+      }
     }
 
     createGrid();
     update();
-    setInterval(update, 1500);
-  </script>
+    setInterval(update, 1500);   // оновлення кожні 1.5 сек
+</script>
 </body>
 </html>
