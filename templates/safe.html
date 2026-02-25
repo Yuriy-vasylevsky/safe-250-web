@@ -5,29 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🔒 СЕЙФ 250</title>
   <style>
-    body { font-family: 'Segoe UI', Arial; background: linear-gradient(135deg, #0a0a1f, #1a0033); color: #fff; margin: 0; padding: 20px; text-align: center; }
+    body { 
+      font-family: 'Segoe UI', Arial; 
+      background: linear-gradient(135deg, #0a0a1f, #1a0033); 
+      color: #fff; 
+      margin: 0; 
+      padding: 20px; 
+      text-align: center; 
+    }
     h1 { font-size: 3rem; color: #ff3366; text-shadow: 0 0 20px #ff00aa; }
-    .grid { display: grid; grid-template-columns: repeat(25, 1fr); gap: 6px; max-width: 1150px; margin: 30px auto; padding: 25px; background: rgba(0,0,0,0.5); border-radius: 20px; }
-    .cell { width: 40px; height: 40px; background: #1e1e2e; border: 3px solid #555; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; transition: 0.3s; font-size: 15px; }
-    .opened { background: #440000 !important; color: #ff6666 !important; text-decoration: line-through; border-color: #ff3366; }
-    .win { background: #004400 !important; color: #00ff88 !important; border-color: #00ff88; animation: winpulse 1.5s infinite; }
+    .grid { 
+      display: grid; 
+      grid-template-columns: repeat(25, 1fr); 
+      gap: 6px; 
+      max-width: 1150px; 
+      margin: 30px auto; 
+      padding: 25px; 
+      background: rgba(0,0,0,0.5); 
+      border-radius: 20px; 
+    }
+    .cell { 
+      width: 40px; height: 40px; 
+      background: #1e1e2e; 
+      border: 3px solid #555; 
+      border-radius: 10px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      font-weight: bold; 
+      transition: 0.3s; 
+      font-size: 15px;
+    }
+    .opened { 
+      background: #440000 !important; 
+      color: #ff6666 !important; 
+      text-decoration: line-through; 
+      border-color: #ff3366; 
+    }
+    .win { 
+      background: #004400 !important; 
+      color: #00ff88 !important; 
+      border-color: #00ff88; 
+      animation: winpulse 1.5s infinite; 
+    }
     @keyframes winpulse { 0%,100% {transform:scale(1);} 50% {transform:scale(1.15);} }
     .info { font-size: 1.5rem; margin: 15px 0; color: #ffcc66; }
-    #debug { margin-top: 20px; color: #888; font-size: 12px; text-align: left; max-width: 800px; margin-left: auto; margin-right: auto; }
   </style>
 </head>
 <body>
   <h1>🔒 СЕЙФ 250</h1>
   <p class="info">Відкрито: <span id="count">0</span> / 250</p>
   <div class="grid" id="grid"></div>
-  <div id="debug"></div>
 
   <script>
-    const API_URL = "https://ТВІЙ_БОТ_URL/api/safe";   // ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
-    // Наприклад: https://kassa-4444-production.up.railway.app/api/safe
-
-    const debug = document.getElementById('debug');
-    function log(msg) { debug.innerHTML += msg + '<br>'; console.log(msg); }
+    // === ТВІЙ ТОЧНИЙ URL ===
+    const API_URL = "https://tgbot-production-97ae.up.railway.app/api/safe";
 
     const grid = document.getElementById('grid');
 
@@ -40,24 +72,22 @@
         cell.id = `c${i}`;
         grid.appendChild(cell);
       }
-      log('✅ Сітка 250 клітинок створена');
     }
 
     async function update() {
-      log(`🔄 Запит до API: ${API_URL}`);
       try {
         const res = await fetch(API_URL);
-        log(`📡 Статус відповіді: ${res.status}`);
         const data = await res.json();
-        log(`📊 Отримано ${data.opened.length} відкритих клітинок`);
 
         document.getElementById('count').textContent = data.opened.length;
 
+        // Скидаємо всі клітинки
         for (let i = 1; i <= 250; i++) {
           const el = document.getElementById(`c${i}`);
           if (el) el.classList.remove('opened', 'win');
         }
 
+        // Закреслюємо відкриті + пульс на виграшній
         data.opened.forEach(n => {
           const el = document.getElementById(`c${n}`);
           if (el) {
@@ -65,16 +95,14 @@
             if (n === data.win_cell) el.classList.add('win');
           }
         });
-        log('✅ Клітинки оновлено');
       } catch(e) {
-        log(`❌ ПОМИЛКА: ${e.message}`);
-        console.error(e);
+        console.error("Помилка підключення до API:", e);
       }
     }
 
     createGrid();
     update();
-    setInterval(update, 2000);
+    setInterval(update, 1500);
   </script>
 </body>
 </html>
