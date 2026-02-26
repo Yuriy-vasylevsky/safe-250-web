@@ -21,12 +21,12 @@
   <p class="info">Відкрито: <span id="count">0</span> / 250</p>
   <p class="status" id="status">⏳ Підключення...</p>
   <div class="grid" id="grid"></div>
-
-  <script>
+<script>
     const API_URL = "https://intramarginal-existentialistically-corrin.ngrok-free.dev/api/safe";
 
     const grid = document.getElementById('grid');
     const statusEl = document.getElementById('status');
+    let lastOpenedStr = "";  // ← кешуємо попередній стан
 
     function createGrid() {
       grid.innerHTML = '';
@@ -41,45 +41,42 @@
 
     function applyState(data) {
       document.getElementById('count').textContent = data.opened.length;
-
       for (let i = 1; i <= 250; i++) {
         const el = document.getElementById(`c${i}`);
         if (el) el.classList.remove('opened');
       }
-
       data.opened.forEach(n => {
         const el = document.getElementById(`c${n}`);
         if (el) el.classList.add('opened');
       });
     }
 
-    function connect() {
-      // const evtSource = new EventSource(API_URL);
-      const evtSource = new EventSource(API_URL + "?ngrok-skip-browser-warning=true");
-      evtSource.onopen = function() {
-        statusEl.textContent = '🟢 Live — оновлення в реальному часі';
-        statusEl.className = 'status live';
-      };
+    async function update() {
+      try {
+        const res = await fetch(API_URL, {
+          headers: { 'ngrok-skip-browser-warning': 'true' }
+        });
+        const data = await res.json();
 
-      evtSource.onmessage = function(event) {
-        try {
-          const data = JSON.parse(event.data);
+        // ← Перемальовуємо тільки якщо список змінився
+        const newStr = JSON.stringify(data.opened);
+        if (newStr !== lastOpenedStr) {
+          lastOpenedStr = newStr;
           applyState(data);
-        } catch(e) {
-          console.error("Помилка парсингу:", e);
         }
-      };
 
-      evtSource.onerror = function() {
-        statusEl.textContent = '🔴 З\'єднання перервано, перепідключення...';
+        statusEl.textContent = '🟢 Live';
+        statusEl.className = 'status live';
+      } catch(e) {
+        statusEl.textContent = '🔴 Помилка підключення';
         statusEl.className = 'status dead';
-        evtSource.close();
-        setTimeout(connect, 3000); // перепідключення через 3с
-      };
+      }
     }
 
     createGrid();
-    connect();
-  </script>
+    update();
+    setInterval(update, 1500);
+</script>
+
 </body>
 </html>
