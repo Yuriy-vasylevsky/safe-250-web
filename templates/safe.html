@@ -33,10 +33,14 @@
         grid.appendChild(cell);
       }
     }
-
+    
     async function update() {
       try {
-        const res = await fetch(API_URL);
+        const res = await fetch(API_URL, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true'
+          }
+        });
         const data = await res.json();
         
         document.getElementById('count').textContent = data.opened.length;
