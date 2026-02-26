@@ -19,8 +19,7 @@
   <div class="grid" id="grid"></div>
 
   <script>
-    // const API_URL = "https://tgbot-production-97ae.up.railway.app/api/safe";
-    const API_URL = "https://intramarginal-existentialistically-corrin.ngrok-free.dev";
+    const API_URL = "https://intramarginal-existentialistically-corrin.ngrok-free.dev/api/safe";
 
     const grid = document.getElementById('grid');
 
@@ -39,6 +38,7 @@
       try {
         const res = await fetch(API_URL);
         const data = await res.json();
+        
         document.getElementById('count').textContent = data.opened.length;
 
         for (let i = 1; i <= 250; i++) {
@@ -50,7 +50,9 @@
           const el = document.getElementById(`c${n}`);
           if (el) el.classList.add('opened');
         });
-      } catch(e) {}
+      } catch(e) {
+        console.error("Не можу підключитися до API", e);
+      }
     }
 
     createGrid();
