@@ -1,79 +1,66 @@
+
 <!DOCTYPE html>
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🔒 СЕЙФ 250</title>
-  <style>
-    body { font-family: 'Segoe UI', Arial; background: linear-gradient(135deg, #0a0a1f, #1a0033); color: #fff; margin: 0; padding: 20px; text-align: center; }
-    h1 { font-size: 3rem; color: #ff3366; text-shadow: 0 0 20px #ff00aa; }
-    .grid { display: grid; grid-template-columns: repeat(25, 40px); gap: 6px; justify-content: center; margin: 30px auto; padding: 25px; background: rgba(0,0,0,0.5); border-radius: 20px; max-width: 1200px; }
-    .cell { width: 40px; height: 40px; background: #1e1e2e; border: 3px solid #555; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; transition: 0.3s; font-size: 13px; }
-    .opened { background: #440000 !important; color: #ff6666 !important; text-decoration: line-through; border-color: #ff3366; }
-    .info { font-size: 1.5rem; margin: 15px 0; color: #ffcc66; }
-    .status { font-size: 0.9rem; margin-top: 10px; }
-    .status.live { color: #44ff88; }
-    .status.dead { color: #ff4444; }
-  </style>
+  <title>СЕЙФ 250</title>
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}"> -->
+  <link rel="stylesheet" href="../static/main.css">
 </head>
 <body>
-  <h1>🔒 СЕЙФ 250</h1>
-  <p class="info">Відкрито: <span id="count">0</span> / 250</p>
-  <p class="status" id="status">⏳ Підключення...</p>
-  <div class="grid" id="grid"></div>
 
-  <script>
-    const API_URL = "https://intramarginal-existentialistically-corrin.ngrok-free.dev/api/safe";
-    let lastOpenedStr = "";
+  <!-- ── Header ── -->
+  <header>
+    <div class="logo">🔒 <span>СЕЙФ</span> 250</div>
+    <div class="tagline">ЗНАЙДИ ВИГРАШНУ КЛІТИНКУ</div>
+  </header>
 
-    function createGrid() {
-      const grid = document.getElementById('grid');
-      grid.innerHTML = '';
-      for (let i = 1; i <= 250; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.textContent = i;
-        cell.id = `c${i}`;
-        grid.appendChild(cell);
-      }
-    }
+  <!-- ── Stats ── -->
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-value" id="count">0</div>
+      <div class="stat-label">Відкрито</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-value">250</div>
+      <div class="stat-label">Всього</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-value" id="remain">250</div>
+      <div class="stat-label">Залишилось</div>
+    </div>
+  </div>
 
-    function applyState(data) {
-      document.getElementById('count').textContent = data.opened.length;
-      for (let i = 1; i <= 250; i++) {
-        const el = document.getElementById(`c${i}`);
-        if (el) el.classList.remove('opened');
-      }
-      data.opened.forEach(n => {
-        const el = document.getElementById(`c${n}`);
-        if (el) el.classList.add('opened');
-      });
-    }
+  <!-- ── Progress ── -->
+  <div class="progress-wrap">
+    <div class="progress-track">
+      <div class="progress-fill" id="progress"></div>
+    </div>
+  </div>
 
-    async function update() {
-      try {
-        const res = await fetch(API_URL, {
-          headers: { 'ngrok-skip-browser-warning': 'true' }
-        });
-        const data = await res.json();
+  <!-- ── Status ── -->
+  <div class="status-wrap">
+    <span class="status connecting" id="status">ПІДКЛЮЧЕННЯ...</span>
+  </div>
 
-        const newStr = JSON.stringify(data.opened.sort((a,b) => a-b));
-        if (newStr !== lastOpenedStr) {
-          lastOpenedStr = newStr;
-          applyState(data);
-        }
+  <!-- ── Grid ── -->
+  <div class="grid-container">
+    <div class="grid" id="grid"></div>
+  </div>
 
-        document.getElementById('status').textContent = '🟢 Live';
-        document.getElementById('status').className = 'status live';
-      } catch(e) {
-        document.getElementById('status').textContent = '🔴 Помилка підключення';
-        document.getElementById('status').className = 'status dead';
-      }
-    }
+  <!-- ── Footer ── -->
+  <footer>SAFE-250 &nbsp;·&nbsp; REAL-TIME</footer>
 
-    createGrid();
-    update();
-    setInterval(update, 1500);
-  </script>
+  <!-- <script>
+    window.API_URL = "{{ api_url }}";
+  </script> -->
+
+<script> window.API_URL = "https://твій-ngrok.ngrok-free.dev/api/safe"; </script>
+
+<!-- <script src="{{ url_for('static', filename='app.js') }}"></script> -->
+ <script src="../static/app.js"></script>
 </body>
 </html>
