@@ -11,17 +11,22 @@
     .cell { width: 40px; height: 40px; background: #1e1e2e; border: 3px solid #555; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; transition: 0.3s; font-size: 15px; }
     .opened { background: #440000 !important; color: #ff6666 !important; text-decoration: line-through; border-color: #ff3366; }
     .info { font-size: 1.5rem; margin: 15px 0; color: #ffcc66; }
+    .status { font-size: 0.9rem; color: #888; margin-top: 10px; }
+    .status.live { color: #44ff88; }
+    .status.dead { color: #ff4444; }
   </style>
 </head>
 <body>
   <h1>🔒 СЕЙФ 250</h1>
   <p class="info">Відкрито: <span id="count">0</span> / 250</p>
+  <p class="status" id="status">⏳ Підключення...</p>
   <div class="grid" id="grid"></div>
 
   <script>
     const API_URL = "https://intramarginal-existentialistically-corrin.ngrok-free.dev/api/safe";
 
     const grid = document.getElementById('grid');
+    const statusEl = document.getElementById('status');
 
     function createGrid() {
       grid.innerHTML = '';
@@ -33,35 +38,48 @@
         grid.appendChild(cell);
       }
     }
-    
-    async function update() {
-      try {
-        const res = await fetch(API_URL, {
-          headers: {
-            'ngrok-skip-browser-warning': 'true'
-          }
-        });
-        const data = await res.json();
-        
-        document.getElementById('count').textContent = data.opened.length;
 
-        for (let i = 1; i <= 250; i++) {
-          const el = document.getElementById(`c${i}`);
-          if (el) el.classList.remove('opened');
-        }
+    function applyState(data) {
+      document.getElementById('count').textContent = data.opened.length;
 
-        data.opened.forEach(n => {
-          const el = document.getElementById(`c${n}`);
-          if (el) el.classList.add('opened');
-        });
-      } catch(e) {
-        console.error("Помилка:", e);
+      for (let i = 1; i <= 250; i++) {
+        const el = document.getElementById(`c${i}`);
+        if (el) el.classList.remove('opened');
       }
+
+      data.opened.forEach(n => {
+        const el = document.getElementById(`c${n}`);
+        if (el) el.classList.add('opened');
+      });
+    }
+
+    function connect() {
+      const evtSource = new EventSource(API_URL);
+
+      evtSource.onopen = function() {
+        statusEl.textContent = '🟢 Live — оновлення в реальному часі';
+        statusEl.className = 'status live';
+      };
+
+      evtSource.onmessage = function(event) {
+        try {
+          const data = JSON.parse(event.data);
+          applyState(data);
+        } catch(e) {
+          console.error("Помилка парсингу:", e);
+        }
+      };
+
+      evtSource.onerror = function() {
+        statusEl.textContent = '🔴 З\'єднання перервано, перепідключення...';
+        statusEl.className = 'status dead';
+        evtSource.close();
+        setTimeout(connect, 3000); // перепідключення через 3с
+      };
     }
 
     createGrid();
-    update();
-    setInterval(update, 1500);
+    connect();
   </script>
 </body>
 </html>
