@@ -7,11 +7,11 @@
   <style>
     body { font-family: 'Segoe UI', Arial; background: linear-gradient(135deg, #0a0a1f, #1a0033); color: #fff; margin: 0; padding: 20px; text-align: center; }
     h1 { font-size: 3rem; color: #ff3366; text-shadow: 0 0 20px #ff00aa; }
-    .grid { display: grid; grid-template-columns: repeat(25, 1fr); gap: 6px; max-width: 1150px; margin: 30px auto; padding: 25px; background: rgba(0,0,0,0.5); border-radius: 20px; }
-    .cell { width: 40px; height: 40px; background: #1e1e2e; border: 3px solid #555; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; transition: 0.3s; font-size: 15px; }
+    .grid { display: grid; grid-template-columns: repeat(25, 40px); gap: 6px; justify-content: center; margin: 30px auto; padding: 25px; background: rgba(0,0,0,0.5); border-radius: 20px; max-width: 1200px; }
+    .cell { width: 40px; height: 40px; background: #1e1e2e; border: 3px solid #555; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; transition: 0.3s; font-size: 13px; }
     .opened { background: #440000 !important; color: #ff6666 !important; text-decoration: line-through; border-color: #ff3366; }
     .info { font-size: 1.5rem; margin: 15px 0; color: #ffcc66; }
-    .status { font-size: 0.9rem; color: #888; margin-top: 10px; }
+    .status { font-size: 0.9rem; margin-top: 10px; }
     .status.live { color: #44ff88; }
     .status.dead { color: #ff4444; }
   </style>
@@ -21,14 +21,13 @@
   <p class="info">Відкрито: <span id="count">0</span> / 250</p>
   <p class="status" id="status">⏳ Підключення...</p>
   <div class="grid" id="grid"></div>
-<script>
-    const API_URL = "https://intramarginal-existentialistically-corrin.ngrok-free.dev/api/safe";
 
-    const grid = document.getElementById('grid');
-    const statusEl = document.getElementById('status');
-    let lastOpenedStr = "";  // ← кешуємо попередній стан
+  <script>
+    const API_URL = "https://intramarginal-existentialistically-corrin.ngrok-free.dev/api/safe";
+    let lastOpenedStr = "";
 
     function createGrid() {
+      const grid = document.getElementById('grid');
       grid.innerHTML = '';
       for (let i = 1; i <= 250; i++) {
         const cell = document.createElement('div');
@@ -58,25 +57,23 @@
         });
         const data = await res.json();
 
-        // ← Перемальовуємо тільки якщо список змінився
-        const newStr = JSON.stringify(data.opened);
+        const newStr = JSON.stringify(data.opened.sort((a,b) => a-b));
         if (newStr !== lastOpenedStr) {
           lastOpenedStr = newStr;
           applyState(data);
         }
 
-        statusEl.textContent = '🟢 Live';
-        statusEl.className = 'status live';
+        document.getElementById('status').textContent = '🟢 Live';
+        document.getElementById('status').className = 'status live';
       } catch(e) {
-        statusEl.textContent = '🔴 Помилка підключення';
-        statusEl.className = 'status dead';
+        document.getElementById('status').textContent = '🔴 Помилка підключення';
+        document.getElementById('status').className = 'status dead';
       }
     }
 
     createGrid();
     update();
     setInterval(update, 1500);
-</script>
-
+  </script>
 </body>
 </html>
