@@ -54,8 +54,8 @@
     }
 
     function connect() {
-      const evtSource = new EventSource(API_URL);
-
+      // const evtSource = new EventSource(API_URL);
+      const evtSource = new EventSource(API_URL + "?ngrok-skip-browser-warning=true");
       evtSource.onopen = function() {
         statusEl.textContent = '🟢 Live — оновлення в реальному часі';
         statusEl.className = 'status live';
