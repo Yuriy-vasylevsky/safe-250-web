@@ -477,23 +477,26 @@ footer {
 }
 
 .leader-stats {
-  font-family: 'Share Tech Mono', monospace;
+  min-width: 125px;
   text-align: right;
-  min-width: 110px;
 }
 
 .leader-count {
   font-size: 1.15rem;
   color: var(--accent);
+  font-weight: 600;
 }
 
 .leader-percent {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: var(--text-dim);
+  font-weight: 400;
+  margin-left: 4px;
 }
 
+/* Прогрес-бар */
 .leader-progress {
-  height: 6px;
+  height: 5px;
   background: var(--cell-border);
   border-radius: 3px;
   margin-top: 6px;

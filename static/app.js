@@ -138,6 +138,35 @@ function applyState(data) {
 }
 
 // 🔥 РЕНДЕР ЛІДЕРБОРДУ
+// function renderLeaderboard(users) {
+//   if (!users || Object.keys(users).length === 0) {
+//     leaderboardEl.innerHTML = `<div class="leader-item" style="justify-content:center;color:#6b5a8a;">Ще ніхто не відкривав клітинки...</div>`;
+//     return;
+//   }
+
+//   const sorted = Object.entries(users)
+//     .map(([id, u]) => ({...u, count: u.count || 0}))
+//     .sort((a, b) => b.count - a.count);
+
+//   let html = '';
+//   sorted.forEach((user, i) => {
+//     const percent = ((user.count / TOTAL) * 100).toFixed(1);
+//     const top1 = i === 0 ? 'top1' : '';
+//     html += `
+//       <div class="leader-item ${top1}">
+//         <div class="leader-rank">#${i+1}</div>
+//         <div class="leader-name">${user.display_name}</div>
+//         <div class="leader-stats">
+//           <div class="leader-count">${user.count} <span style="font-size:0.85rem;color:#6b5a8a">кл.</span></div>
+//           <div class="leader-percent">${percent}%</div>
+//           <div class="leader-progress"><div class="leader-progress-fill" style="width:${percent}%"></div></div>
+//         </div>
+//       </div>`;
+//   });
+//   leaderboardEl.innerHTML = html;
+// }
+
+// 🔥 РЕНДЕР ЛІДЕРБОРДУ (оновлена версія)
 function renderLeaderboard(users) {
   if (!users || Object.keys(users).length === 0) {
     leaderboardEl.innerHTML = `<div class="leader-item" style="justify-content:center;color:#6b5a8a;">Ще ніхто не відкривав клітинки...</div>`;
@@ -152,19 +181,25 @@ function renderLeaderboard(users) {
   sorted.forEach((user, i) => {
     const percent = ((user.count / TOTAL) * 100).toFixed(1);
     const top1 = i === 0 ? 'top1' : '';
+
     html += `
       <div class="leader-item ${top1}">
         <div class="leader-rank">#${i+1}</div>
         <div class="leader-name">${user.display_name}</div>
         <div class="leader-stats">
-          <div class="leader-count">${user.count} <span style="font-size:0.85rem;color:#6b5a8a">кл.</span></div>
-          <div class="leader-percent">${percent}%</div>
-          <div class="leader-progress"><div class="leader-progress-fill" style="width:${percent}%"></div></div>
+          <div class="leader-count">
+            ${user.count} кл. 
+            <span class="leader-percent">• ${percent}%</span>
+          </div>
+          <div class="leader-progress">
+            <div class="leader-progress-fill" style="width:${percent}%"></div>
+          </div>
         </div>
       </div>`;
   });
   leaderboardEl.innerHTML = html;
 }
+
 
 // Статус і update (зміни тільки в update)
 function setStatus(type, text) {
