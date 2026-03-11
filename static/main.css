@@ -408,3 +408,115 @@ footer {
     aspect-ratio: 1.4;
   }
 }
+
+
+/* ===================== ЛІДЕРБОРД ===================== */
+.leaderboard-container {
+  max-width: 1160px;
+  margin: 30px auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.leader-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 16px;
+  color: var(--gold);
+  text-shadow: 0 0 20px var(--gold-dim);
+  letter-spacing: 0.1em;
+}
+
+.leader-list {
+  background: var(--bg-mid);
+  border: 1px solid var(--cell-border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 0 40px #ff006610;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.leader-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  background: var(--cell-bg);
+  border: 1px solid var(--cell-border);
+  border-radius: 10px;
+  transition: all 0.3s;
+}
+
+.leader-item:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 15px var(--accent-glow);
+  transform: translateY(-2px);
+}
+
+.leader-rank {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+  width: 36px;
+  color: var(--gold);
+  text-align: center;
+}
+
+.leader-name {
+  flex: 1;
+  font-size: 1.1rem;
+  color: var(--text-bright);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leader-stats {
+  font-family: 'Share Tech Mono', monospace;
+  text-align: right;
+  min-width: 110px;
+}
+
+.leader-count {
+  font-size: 1.15rem;
+  color: var(--accent);
+}
+
+.leader-percent {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.leader-progress {
+  height: 6px;
+  background: var(--cell-border);
+  border-radius: 3px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.leader-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  transition: width 0.8s ease;
+  box-shadow: 0 0 8px var(--accent);
+}
+
+/* Топ-1 — золото */
+.leader-item.top1 {
+  border-color: var(--gold);
+  background: #1a120033;
+}
+.leader-item.top1 .leader-rank {
+  animation: gold-glow 2s infinite alternate;
+}
+
+@keyframes gold-glow {
+  from { text-shadow: 0 0 10px var(--gold); }
+  to { text-shadow: 0 0 30px var(--gold), 0 0 50px #ffd70088; }
+}
