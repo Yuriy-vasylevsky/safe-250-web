@@ -8,7 +8,7 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 # ── API URL твого ngrok/бота ──
 NGROK_API = os.environ.get(
     "API_URL",
-    "static.244.71.42.77.clients.your-server.de"
+    "http://77.42.71.244:3000/api/safe"
     #  "static.244.71.42.77.clients.your-server.de/api/safe"
 )
 
